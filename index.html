@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RafaelApi's</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .header {
+            background-color: #007bff; /* Blue header */
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            position: relative;
+            height: 60px; /* Define header height */
+        }
+        .header img {
+            width: 40px; /* Logo size */
+            margin-right: 10px; /* Space between logo and title */
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .info-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .info-box h2 {
+            margin-top: 0;
+            font-family: 'Arial Black', sans-serif; /* Bold and unique font for heading */
+            color: #007bff; /* Make the heading blue to match the header */
+        }
+        .info-box p, .info-box ul {
+            font-family: 'Verdana', sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+        .info-box ul {
+            list-style-type: none; 
+            padding-left: 0;
+        }
+        .info-box ul li {
+            padding: 5px 0;
+        }
+        .feature-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .feature-btn:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f4f4f4;
+            color: #666;
+            font-size: 12px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="https://via.placeholder.com/40" alt="API Logo"> <!-- Placeholder for your API logo -->
+        <h1>RafaelApi's</h1>
+    </div>
+
+    <div class="content">
+        <div class="info-box">
+            <h2>Rafael Api</h2>
+            <p>Api Ini Di Buat Untuk Anda</p>
+            <ul>
+                <li>- Gratis</li>
+                <li>- Tanpa Login</li>
+                <li>- Tanpa apikey</li>
+                <li>- Unlimited Request</li>
+            </ul>
+        </div>
+  
+        <div class="info-box">
+            <h2>Battery</h2>
+            <p id="battery-status">Memuat informasi baterai...</p>
+        </div>
+        
+        <div class="info-box">
+            <h2>IP Address</h2>
+            <p id="ip-address">Memuat IP address...</p>
+        </div>
+
+        <!-- Feature Button -->
+        <a href="feature.html" class="feature-btn" onclick="window.location.href='feature.html'; return false;">Feature</a>
+
+    <!-- Footer with Copyright -->
+    <div class="footer">
+        &copy; 2024 RafaelApi's. All rights reserved.
+    </div>
+
+    <script>
+        // Get battery status
+        navigator.getBattery().then(function(battery) {
+            const batteryStatus = document.getElementById('battery-status');
+            batteryStatus.textContent = `Baterai: ${Math.round(battery.level * 100)}%`;
+        });
+
+        // Get IP address (using external API)
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip-address').textContent = `IP Address: ${data.ip}`;
+            });
+    </script>
+
+</body>
+</html>
