@@ -70,21 +70,6 @@ function genreff() {
 app.use(cors());
 
 
-app.get("/api/orkut/cekstatus", async (req, res) => {
-  const { merchant, keyorkut } = req.query;
-  if (!merchant) return res.status(400).json({ message: "merchant is required" });
-  if (!keyorkut) return res.status(400).json({ message: "keyorkut is required" });
-
-  try {
-    const response = await fetch(`https://api.elxyzgpt.xyz/orkut/checkpayment?apikey=rafael&merchant=${merchant}&token=${keyorkut}`);
-    const data = await response.json(); // Perbaikan di sini, menambahkan await dan memperbaiki nama variabel
-
-    res.json({ status: true, creator: "Rafael", result: data }); // Mengganti `gateway.result` dengan `data.result`
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 
 
@@ -123,27 +108,33 @@ app.get('/api/orkut/createpayment', async (req, res) => {
     }
     try {
         const qrData = await createQRIS(amount, codeqr);
-        res.json({ status: true, creator: "Rafael", result: qrData });
+        res.json({ status: true, creator: "Rafael", result: qrData });        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
+
+
 app.get('/api/orkut/cekstatus', async (req, res) => {
-	const { merchant } = req.query;
+    const { merchant, keyorkut } = req.query;
         if (!merchant) {
-        return res.json(Func.resValid("Isi Parameter Merchant."));
-        }
-        const { keyorkut } = req.query;
-       if (!keyorkut) {
-       return res.json(Func.resValid("Isi Parameter Token menggunakan token kalian."));
-       }
-   try {
-        const apiUrl = `https://gateway.okeconnect.com/api/mutasi/qris/${merchant}/${token}`;
+        return res.json({ error: "Isi Parameter Merchant." });
+    }
+    if (!keyorkut) {
+        return res.json({ error: "Isi Parameter Token menggunakan token kalian." });
+    }
+    try {
+        const apiUrl = `https://gateway.okeconnect.com/api/mutasi/qris/${merchant}/${keyorkut}`;
         const response = await axios.get(apiUrl);
         const result = response.data;
-        const latestTransaction = result.data[0]; // Ambil transaksi terbaru saja
-        res.json(latestTransaction);
+                // Check if data exists and get the latest transaction
+        const latestTransaction = result.data && result.data.length > 0 ? result.data[0] : null;
+                if (latestTransaction) {
+            res.json(latestTransaction);
+        } else {
+            res.json({ message: "No transactions found." });
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
