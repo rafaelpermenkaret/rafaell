@@ -123,7 +123,7 @@ app.get('/api/orkut/createpayment', async (req, res) => {
     }
     try {
         const qrData = await createQRIS(amount, codeqr);
-        res.json({ qrData });
+        res.json({ status: true, creator: "Rafael", result: qrData });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
