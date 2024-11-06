@@ -37,15 +37,13 @@ function generateExpirationTime() {
     return expirationTime;
 }
 
-async function elxyzFile(Path) {
+async function elxyzFile(buffer) {
     return new Promise(async (resolve, reject) => {
-        if (!fs.existsSync(Path)) return reject(new Error("File not Found"));
-
         try {
             const form = new FormData();
-            form.append("file", fs.createReadStream(Path));
+            form.append("file", buffer, { filename: "qr_image.png", contentType: "image/png" });
 
-            console.log(`Uploading file from path: ${Path}`);
+            console.log('Uploading QR image...');
 
             const response = await axios.post('https://cdn.elxyz.me/', form, {
                 headers: form.getHeaders(),
@@ -79,11 +77,9 @@ async function generateQRIS(amount) {
 
         const result = step2[0] + uang + step2[1] + convertCRC16(step2[0] + uang + step2[1]);
 
-        await QRCode.toFile('qr_image.png', result);
+        const buffer = await QRCode.toBuffer(result);
 
-        const uploadedFile = await elxyzFile('qr_image.png');
-
-        fs.unlinkSync('qr_image.png');
+        const uploadedFile = await elxyzFile(buffer);
 
         return {
             transactionId: generateTransactionId(),
@@ -99,7 +95,7 @@ async function generateQRIS(amount) {
 
 async function createQRIS(amount, codeqr) {
     try {
-        let qrisData = codeqr
+        let qrisData = codeqr;
 
         qrisData = qrisData.slice(0, -4);
         const step1 = qrisData.replace("010211", "010212");
@@ -111,11 +107,9 @@ async function createQRIS(amount, codeqr) {
 
         const result = step2[0] + uang + step2[1] + convertCRC16(step2[0] + uang + step2[1]);
 
-        await QRCode.toFile('qr_image.png', result);
+        const buffer = await QRCode.toBuffer(result);
 
-        const uploadedFile = await elxyzFile('qr_image.png');
-
-        fs.unlinkSync('qr_image.png');
+        const uploadedFile = await elxyzFile(buffer);
 
         return {
             transactionId: generateTransactionId(),
@@ -153,11 +147,11 @@ async function checkQRISStatus() {
 }
 
 module.exports = {
-  convertCRC16,
-  generateTransactionId,
-  generateExpirationTime,
-  elxyzFile,
-  generateQRIS,
-  createQRIS,
-  checkQRISStatus
-}
+    convertCRC16,
+    generateTransactionId,
+    generateExpirationTime,
+    elxyzFile,
+    generateQRIS,
+    createQRIS,
+    checkQRISStatus
+};
